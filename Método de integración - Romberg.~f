@@ -3,15 +3,13 @@
       program problema1
       implicit none
 
-      integer i,j
-      integer k
+      integer i,j,m,n,size
+      integer k,count
       real a,b,e_calculado,e_requerido,abs
       double precision f,fsuma
       double precision , allocatable,dimension(:,:)::R
+      double precision , allocatable,dimension(:,:)::R_aux
 
-      write(*,*)"Digite el valor de k: "
-      read(*,*)k
-      allocate(R(k,k))
 
       write(*,*)"Digite el l¡mite a: "     !Le pregunta al usuario los limites de integraci¢n
       read(*,*)a
@@ -22,9 +20,15 @@
       read(*,*)e_requerido
 
 
+      size = 2
+      allocate(R(size,size))
+      allocate(R_aux(size,size))
+
 
       R(1,1) = (b-a)*0.5*(f(a) + f(b))
+      R_aux(1,1) = R(1,1)
 
+      write(*,*)R(1,1)
 
 
 
@@ -33,62 +37,91 @@
 
 
 
+
+
+
+
+      count = 1
+      do while(count==1)
+
+
       !Esta parte se encarga de calcular los elementos de la primera columna de la matriz
-      do i=1,k
+      do i=1,size
       if (i>=2) then
       R(i,1) = 0.5*(R(i-1,1) + (b-a)/(2**(i-2))*fsuma(i,a,b))
+      R_aux(i,1) = R(i,1)
       end if
 
 
 
-      do j=2,k
+      do j=2,size
+
 
       !La condici¢n if sirve para seleccionar solo aquellos elementos que esten debajo de la matriz triangular inferior
       if (j<=i) then
       R(i,j) = (4**(j-1)*R(i,j-1)-R(i-1,j-1))/(4**(j-1)-1)
+      R_aux(i,j) = R(i,j)
 
 
       write(*,*)i,j
       e_calculado = abs((R(i,j) - R(i,j-1))/R(i,j))
       write(*,*)"El error es: ",e_calculado
 
-
-
       !Le pregunta al usuario si el error calculado es menor o igual al error requerido
+
       if(e_calculado <= e_requerido) then
-      exit
-
-
-      end if
+      exit  !En caso de que s¡, sale del primer for
       end if
 
 
-
+      end if
 
       end do
 
       if(e_calculado <= e_requerido) then
-      exit
+      exit      !En caso de que si sea sale del segundo for
+
       end if
 
       end do
 
+      if(e_calculado <= e_requerido) then
+      count = 0  !En caso de que s¡, sale del while
 
+      else  !En caso de que no aumenta el tama¤o de la matriz
+
+      size = size + 1
+
+
+      deallocate(R)
+      allocate(R(size,size))
+
+
+
+      !copiado de la matriz nueva a los valores de la matriz auxuliar
+
+
+      do m=1,size-1
+      do n=1,size-1
+      if (n<=m) then
+      R(m,n) = R_aux(m,n)
+      write(*,*)R_aux(m,n)
+      end if
+      end do
+      end do
+
+
+      deallocate(R_aux)
+      allocate(R_aux(size,size))
+
+      R(1,1) = (b-a)*0.5*(f(a) + f(b))
+      R_aux(1,1) = R(1,1)
+
+      end if
+
+      end do
 
       !imprime los elementos de la matriz triangular inferior
-      do i=1,k
-      do j=1,k
-
-      if (j<=i) then
-
-      write(*,*)R(i,j)
-
-
-      end if
-
-
-      end do
-      end do
 
 
 

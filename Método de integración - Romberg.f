@@ -38,15 +38,13 @@
 
 
 
-
-
-
       count = 1
       do while(count==1)
 
-
+      i = size
       !Esta parte se encarga de calcular los elementos de la primera columna de la matriz
-      do i=1,size
+      !do i=1,size
+
       if (i>=2) then
       R(i,1) = 0.5*(R(i-1,1) + (b-a)/(2**(i-2))*fsuma(i,a,b))
       R_aux(i,1) = R(i,1)
@@ -54,7 +52,7 @@
 
 
 
-      do j=2,size
+      do j=2,size  !!!inicio del do mas interno
 
 
       !La condici¢n if sirve para seleccionar solo aquellos elementos que esten debajo de la matriz triangular inferior
@@ -76,17 +74,10 @@
 
       end if
 
-      end do
+      end do !Final del do mas interno
 
-      if(e_calculado <= e_requerido) then
+      if(e_calculado <= e_requerido) then !inicio del if clave
       exit      !En caso de que si sea sale del segundo for
-
-      end if
-
-      end do
-
-      if(e_calculado <= e_requerido) then
-      count = 0  !En caso de que s¡, sale del while
 
       else  !En caso de que no aumenta el tama¤o de la matriz
 
@@ -117,9 +108,23 @@
       R(1,1) = (b-a)*0.5*(f(a) + f(b))
       R_aux(1,1) = R(1,1)
 
-      end if
 
+      do m=1,size-1
+      do n=1,size-1
+      if (n<=m) then
+      R_aux(m,n) = R(m,n)
+
+      end if
       end do
+      end do
+
+
+
+      end if     !final del if clave
+
+      !end do      !final del do externo
+
+      end do     !final del do while
 
       !imprime los elementos de la matriz triangular inferior
 
